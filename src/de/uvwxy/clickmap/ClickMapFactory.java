@@ -10,6 +10,8 @@ import javax.imageio.ImageIO;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.util.Log;
 
 public class ClickMapFactory {
 	private static final int xMin = 0;
@@ -17,10 +19,7 @@ public class ClickMapFactory {
 	private static final int xMax = 2;
 	private static final int yMax = 3;
 
-	public static int[][][] createClickMapOnAndroid(Context c, int resID) {
-
-		Bitmap img = BitmapFactory.decodeResource(c.getResources(), resID);
-
+	public static int[][][] createClickMapOnAndroid(Bitmap img) {
 		int w = img.getWidth();
 		int h = img.getHeight();
 
@@ -42,7 +41,7 @@ public class ClickMapFactory {
 		for (int x = 0; x < w; x++) {
 			for (int y = 0; y < h; y++) {
 				int p = img.getPixel(x, y);
-				
+
 				r = android.graphics.Color.red(p);
 				g = android.graphics.Color.green(p);
 				b = android.graphics.Color.blue(p);
