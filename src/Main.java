@@ -7,8 +7,8 @@ import javax.imageio.ImageIO;
 
 public class Main {
 	private static final int xMin = 0;
-	private static final int xMax = 1;
-	private static final int yMin = 2;
+	private static final int yMin = 1;
+	private static final int xMax = 2;
 	private static final int yMax = 3;
 
 	/**
@@ -32,39 +32,46 @@ public class Main {
 		int h = img.getHeight();
 
 		// rectMap[r][g][xMin,yMin,xMax,yMax];
-		int[][][] rectMap = new int[255][255][4];
+		int[][][] rectMap = new int[256][256][4];
 
 		for (int x = 0; x < 256; x++) {
 			for (int y = 0; y < 256; y++) {
-				rectMap[255][255][0] = Integer.MAX_VALUE;
+				rectMap[x][y][xMin] = Integer.MAX_VALUE;
+				rectMap[x][y][yMin] = Integer.MAX_VALUE;
+				rectMap[x][y][xMax] = Integer.MIN_VALUE;
+				rectMap[x][y][yMax] = Integer.MIN_VALUE;
 			}
 		}
 
-		int color = 0;
+		boolean stillnotnull = true;
+
 		int r, g, b;
 		for (int x = 0; x < w; x++) {
 			for (int y = 0; y < h; y++) {
-				color = img.getRGB(x, y);
-				Color c = new Color(color);
+				Color c = new Color(img.getRGB(x, y));
 				r = c.getRed();
 				g = c.getGreen();
 				b = c.getBlue();
-				// update min
-				if (x < rectMap[r][g][xMin])
-					rectMap[r][g][xMin] = x;
-				if (y < rectMap[r][g][yMin])
-					rectMap[r][g][yMin] = y;
-				// update max
-				if (x > rectMap[r][g][xMax])
-					rectMap[r][g][xMax] = x;
-				if (y > rectMap[r][g][yMax])
-					rectMap[r][g][yMax] = y;
+
+				if (b == 255 && r != 255 && g != 255) {
+					// update min
+					if (x < rectMap[r][g][xMin])
+						rectMap[r][g][xMin] = x;
+					if (y < rectMap[r][g][yMin])
+						rectMap[r][g][yMin] = y;
+					// update max
+					if (x > rectMap[r][g][xMax])
+						rectMap[r][g][xMax] = x;
+					if (y > rectMap[r][g][yMax])
+						rectMap[r][g][yMax] = y;
+				}
 			}
 		}
 
 		for (int x = 0; x < 256; x++) {
 			for (int y = 0; y < 256; y++) {
-				if (rectMap[x][y][xMin] != Integer.MAX_VALUE)
+				if (rectMap[x][y][xMin] != Integer.MAX_VALUE && rectMap[x][y][yMin] != Integer.MAX_VALUE
+						|| rectMap[x][y][xMax] != Integer.MIN_VALUE && rectMap[x][y][yMax] != Integer.MIN_VALUE)
 					out("" + x + "," + y + "," + rectMap[x][y][xMin] + "," + rectMap[x][y][yMin] + ","
 							+ rectMap[x][y][xMax] + "," + rectMap[x][y][yMax]);
 			}
